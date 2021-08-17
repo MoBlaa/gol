@@ -34,6 +34,14 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
         }
         result
     }
+
+    fn value(&self, (x, y): (usize, usize)) -> &char {
+        &self.inner[y][x]
+    }
+
+    fn value_mut(&mut self, (x, y): (usize, usize)) -> &mut char {
+        &mut self.inner[y][x]
+    }
 }
 
 impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIGHT> {
@@ -47,7 +55,16 @@ impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIG
 
 #[tokio::main]
 async fn main() {
-    let field = Field::<5, 5>::new();
+    let mut field = Field::<5, 5>::new();
+    *field.value_mut((1, 1)) = '0';
+    *field.value_mut((2, 1)) = '1';
+    *field.value_mut((3, 1)) = '2';
+    *field.value_mut((1, 2)) = '3';
+    *field.value_mut((2, 2)) = 'x';
+    *field.value_mut((3, 2)) = '4';
+    *field.value_mut((1, 3)) = '5';
+    *field.value_mut((2, 3)) = '6';
+    *field.value_mut((3, 3)) = '7';
     println!("Hello, Field:\n{}", field);
     let neighbours = field.neighbours((2, 2));
     println!("Neighbours of (x=2, y=2) are: {:?}", neighbours);
