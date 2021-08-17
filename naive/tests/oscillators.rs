@@ -55,3 +55,18 @@ fn test_toad() {
         2,
     );
 }
+
+#[test]
+fn test_beacon() {
+    is_oscillating(
+        Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, ALIVE, ALIVE, DEAD, DEAD, DEAD],
+            [DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, DEAD, ALIVE, ALIVE, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]),
+        2,
+    );
+}
