@@ -31,7 +31,7 @@ async fn main() {
 
     let mut strategy = Strategy::new(field.clone());
 
-    let mut round = 1usize;
+    let mut round = 1u32;
     let mut visited = HashSet::new();
     visited.insert(hash(&field));
     let mut whole = Duration::new(0, 0);
@@ -58,5 +58,10 @@ async fn main() {
         }
         round += 1;
     }
-    println!("Finished after {}rnd and {:?}", round + 1, whole);
+    println!(
+        "Finished after {}rnd and {:?} ({:?}/rnd)",
+        round + 1,
+        whole,
+        whole / (round + 1)
+    );
 }
