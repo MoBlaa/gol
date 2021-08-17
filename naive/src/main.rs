@@ -83,6 +83,14 @@ impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIG
     }
 }
 
+impl<const WIDTH: usize, const HEIGHT: usize> From<[[char; WIDTH]; HEIGHT]>
+    for Field<WIDTH, HEIGHT>
+{
+    fn from(inner: [[char; WIDTH]; HEIGHT]) -> Self {
+        Self { inner }
+    }
+}
+
 struct Strategy<const WIDTH: usize, const HEIGHT: usize> {
     field: Field<WIDTH, HEIGHT>,
 }
@@ -162,5 +170,110 @@ async fn main() {
 
         println!("Round {}:\n{}", round, field);
         round = round + 1;
+    }
+}
+
+#[cfg(test)]
+mod test_still_lifes {
+    use crate::{Field, Strategy, ALIVE, DEAD};
+
+    #[test]
+    fn test_block() {
+        let field = Field::from([
+            [DEAD, DEAD, DEAD, DEAD],
+            [DEAD, ALIVE, ALIVE, DEAD],
+            [DEAD, ALIVE, ALIVE, DEAD],
+            [DEAD, DEAD, DEAD, DEAD],
+        ]);
+
+        let mut strategy = Strategy::new(field.clone());
+
+        let next = strategy.next();
+        assert!(
+            next.is_none(),
+            "Advanced on still life to:\n{}",
+            next.unwrap()
+        );
+    }
+
+    #[test]
+    fn test_beehive() {
+        let field = Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, ALIVE, ALIVE, DEAD, DEAD],
+            [DEAD, ALIVE, DEAD, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, ALIVE, ALIVE, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]);
+
+        let mut strategy = Strategy::new(field.clone());
+
+        let next = strategy.next();
+        assert!(
+            next.is_none(),
+            "Advanced on still life to:\n{}",
+            next.unwrap()
+        );
+    }
+
+    #[test]
+    fn test_loaf() {
+        let field = Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, ALIVE, ALIVE, DEAD, DEAD],
+            [DEAD, ALIVE, DEAD, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, DEAD, ALIVE, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]);
+
+        let mut strategy = Strategy::new(field.clone());
+
+        let next = strategy.next();
+        assert!(
+            next.is_none(),
+            "Advanced on still life to:\n{}",
+            next.unwrap()
+        );
+    }
+
+    #[test]
+    fn test_boat() {
+        let field = Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, ALIVE, ALIVE, DEAD, DEAD],
+            [DEAD, ALIVE, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, ALIVE, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]);
+
+        let mut strategy = Strategy::new(field.clone());
+
+        let next = strategy.next();
+        assert!(
+            next.is_none(),
+            "Advanced on still life to:\n{}",
+            next.unwrap()
+        );
+    }
+
+    #[test]
+    fn test_tub() {
+        let field = Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, ALIVE, DEAD, DEAD],
+            [DEAD, ALIVE, DEAD, ALIVE, DEAD],
+            [DEAD, DEAD, ALIVE, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]);
+
+        let mut strategy = Strategy::new(field.clone());
+
+        let next = strategy.next();
+        assert!(
+            next.is_none(),
+            "Advanced on still life to:\n{}",
+            next.unwrap()
+        );
     }
 }
