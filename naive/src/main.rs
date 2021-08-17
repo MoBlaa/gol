@@ -1,3 +1,4 @@
+use std::fmt::Write;
 use std::fmt;
 
 struct Field<const WIDTH: usize, const HEIGHT: usize> {
@@ -6,6 +7,9 @@ struct Field<const WIDTH: usize, const HEIGHT: usize> {
 
 impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
     fn new() -> Self {
+        if WIDTH < 3 || HEIGHT < 3 {
+            panic!("minimum size of a field is 3x3");
+        }
         Self { inner: [[' '; WIDTH]; HEIGHT] }
     }
 
@@ -46,10 +50,17 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
 
 impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIGHT> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut frame = String::new();
+        write!(&mut frame, "[")?;
+        for _ in 0..(WIDTH-2) {
+            write!(&mut frame, "-")?;
+        }
+        write!(&mut frame, "]")?;
+        writeln!(f, "{}", frame)?;
         for row in self.inner {
             writeln!(f, "{}", row.iter().collect::<String>())?;
         }
-        Ok(())
+        write!(f, "{}", frame)
     }
 }
 
