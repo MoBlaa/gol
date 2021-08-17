@@ -13,9 +13,11 @@ fn hash(field: &Field) -> u64 {
 #[tokio::main]
 async fn main() {
     let mut args = std::env::args();
+    args.next();
     let width: usize = args.next().map(|s| s.parse().unwrap_or(100)).unwrap_or(100);
 
     let height: usize = args.next().map(|s| s.parse().unwrap_or(100)).unwrap_or(100);
+    let timeout: u64 = args.next().map(|s| s.parse().unwrap_or(250)).unwrap_or(250);
 
     let field = Field::random(width, height);
     println!("Round 0:\n{}", field);
@@ -26,7 +28,7 @@ async fn main() {
     let mut visited = HashSet::new();
     visited.insert(hash(&field));
     loop {
-        tokio::time::sleep(Duration::from_millis(250)).await;
+        tokio::time::sleep(Duration::from_millis(timeout)).await;
 
         let now = Instant::now();
         let field = strategy.next();

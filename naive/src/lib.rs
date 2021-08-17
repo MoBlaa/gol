@@ -28,11 +28,7 @@ impl Field {
         }
         let mut inner = Vec::with_capacity(height);
         for _ in 0..height {
-            let mut row = Vec::with_capacity(width);
-            for _ in 0..width {
-                row.push(DEAD);
-            }
-            inner.push(row);
+            inner.push(vec![DEAD; width]);
         }
         Self { inner }
     }
