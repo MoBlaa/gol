@@ -44,7 +44,6 @@ async fn main() {
         whole += elapsed;
 
         if field.is_none() {
-            println!("Reached stable state after {} rounds.", round + 1);
             break;
         }
         let field = field.unwrap();
@@ -58,5 +57,5 @@ async fn main() {
         }
         round += 1;
     }
-    println!("Finished after {}rounds and {:?}", round + 1, whole);
+    println!("Finished after {}rnd and {:?}", round + 1, whole);
 }
