@@ -1,4 +1,4 @@
-use naive::{Field, Strategy, ALIVE, DEAD};
+use gol_naive::{Field, Strategy, ALIVE, DEAD};
 
 // Tests for a field to oscillate after [steps].
 fn is_oscillating(root: Field, period: usize) {
