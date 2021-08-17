@@ -27,5 +27,16 @@ fn test_blinker() {
             [DEAD, DEAD, DEAD, DEAD, DEAD],
         ]),
         2,
+    );
+
+    is_oscillating(
+        Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, ALIVE, ALIVE, ALIVE, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]),
+        2,
     )
 }
