@@ -4,7 +4,7 @@ use std::fmt::Write;
 pub const ALIVE: char = '▣';
 pub const DEAD: char = '▢';
 
-#[derive(Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Field<const WIDTH: usize, const HEIGHT: usize> {
     inner: [[char; WIDTH]; HEIGHT],
 }
