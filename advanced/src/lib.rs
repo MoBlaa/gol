@@ -38,7 +38,7 @@ impl Strategy {
     fn advance_row(row: usize, field: &Field) -> Vec<((usize, usize), char)> {
         let mut updates = Vec::new();
         for x in 0..field.width() {
-            if let Some(value) = Strategy::advance_one((x, row), &field) {
+            if let Some(value) = Strategy::advance_one((x, row), field) {
                 updates.push(((x, row), value));
             }
         }
