@@ -70,3 +70,80 @@ fn test_beacon() {
         2,
     );
 }
+
+#[test]
+fn test_pulsar() {
+    is_oscillating(
+        Field::from([
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE,
+                DEAD, DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE,
+                DEAD, DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE,
+                DEAD, DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, ALIVE, DEAD, DEAD, DEAD, DEAD, ALIVE, DEAD, ALIVE, DEAD, DEAD, DEAD,
+                DEAD, ALIVE, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE, DEAD, DEAD, DEAD, ALIVE, ALIVE, ALIVE,
+                DEAD, DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+            [
+                DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD, DEAD,
+                DEAD, DEAD, DEAD,
+            ],
+        ]),
+        3,
+    );
+}
