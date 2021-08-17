@@ -40,3 +40,18 @@ fn test_blinker() {
         2,
     )
 }
+
+#[test]
+fn test_toad() {
+    is_oscillating(
+        Field::from([
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, ALIVE, ALIVE, ALIVE, DEAD],
+            [DEAD, ALIVE, ALIVE, ALIVE, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+            [DEAD, DEAD, DEAD, DEAD, DEAD, DEAD],
+        ]),
+        2,
+    );
+}
