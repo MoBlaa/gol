@@ -18,32 +18,45 @@ async fn main() {
 
     let height: usize = args.next().map(|s| s.parse().unwrap_or(100)).unwrap_or(100);
     let timeout: u64 = args.next().map(|s| s.parse().unwrap_or(250)).unwrap_or(250);
+    let print: bool = args
+        .next()
+        .map(|s| s.parse().unwrap_or(false))
+        .unwrap_or(false);
 
     let field = Field::random(width, height);
-    println!("Round 0:\n{}", field);
+    if print {
+        println!("Round 0:\n{}", field);
+    }
 
     let mut strategy = Strategy::new(field.clone());
 
     let mut round = 1usize;
     let mut visited = HashSet::new();
     visited.insert(hash(&field));
+    let mut whole = Duration::new(0, 0);
     loop {
         tokio::time::sleep(Duration::from_millis(timeout)).await;
 
         let now = Instant::now();
         let field = strategy.next();
         let elapsed = now.elapsed();
+
+        whole += elapsed;
+
         if field.is_none() {
             println!("Reached stable state after {} rounds.", round + 1);
             break;
         }
         let field = field.unwrap();
         if !visited.insert(hash(&field)) {
-            println!("Oscillation reached after {} rounds.", round + 1);
             break;
         }
 
-        println!("Round {} ({:?}):\n{}", round, elapsed, field);
+        if print {
+            println!("Round {} ({:?})", round, elapsed);
+            println!("{}", field);
+        }
         round += 1;
     }
+    println!("Finished after {}rounds and {:?}", round + 1, whole);
 }
