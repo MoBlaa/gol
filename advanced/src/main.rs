@@ -64,7 +64,7 @@ async fn main() {
         tokio::time::sleep(Duration::from_millis(timeout)).await;
     }
     println!(
-        "Finished after {}rnd and {:?} ({:?}/s)",
+        "Finished after {}rnd and {:?} ({:?}/rnd)",
         round + 1,
         whole,
         whole / (round + 1)

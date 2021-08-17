@@ -1,5 +1,6 @@
 use futures::Stream;
 use gol_lib::{Field, ALIVE, DEAD};
+use itertools::Itertools;
 
 pub struct Strategy {
     field: Field,
@@ -34,7 +35,7 @@ impl Strategy {
         }
     }
 
-    fn advance_row(row: usize, field: Field) -> Vec<((usize, usize), char)> {
+    fn advance_row(row: usize, field: &Field) -> Vec<((usize, usize), char)> {
         let mut updates = Vec::new();
         for x in 0..field.width() {
             if let Some(value) = Strategy::advance_one((x, row), &field) {
@@ -46,9 +47,16 @@ impl Strategy {
 
     async fn advance_field(mut field: Field) -> Option<Field> {
         let mut updates = Vec::with_capacity(field.width());
-        for y in 0..field.height() {
+        for chunk in &(0..field.height()).chunks(field.height() / 4 * num_cpus::get()) {
             let field = field.clone();
-            updates.push(tokio::spawn(async move { Strategy::advance_row(y, field) }));
+            let chunk = chunk.collect::<Vec<_>>();
+            updates.push(tokio::spawn(async move {
+                let mut updates = Vec::new();
+                for y in chunk {
+                    updates.extend(Strategy::advance_row(y, &field));
+                }
+                updates
+            }));
         }
 
         let updates = futures::future::join_all(updates)
