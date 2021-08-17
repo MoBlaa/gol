@@ -5,16 +5,16 @@ pub const ALIVE: char = '\u{25AE}';
 pub const DEAD: char = '\u{25AF}';
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct Field<const WIDTH: usize, const HEIGHT: usize> {
-    inner: [[char; WIDTH]; HEIGHT],
+pub struct Field {
+    inner: Vec<Vec<char>>,
 }
 
-impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
-    pub fn random() -> Self {
-        let mut field = Self::dead();
+impl Field {
+    pub fn random(width: usize, height: usize) -> Self {
+        let mut field = Self::dead(width, height);
 
-        for x in 0..WIDTH {
-            for y in 0..HEIGHT {
+        for x in 0..width {
+            for y in 0..height {
                 *field.value_mut((x, y)) = if rand::random::<bool>() { ALIVE } else { DEAD }
             }
         }
@@ -22,17 +22,31 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
         field
     }
 
-    pub fn dead() -> Self {
-        if WIDTH < 3 || HEIGHT < 3 {
+    pub fn dead(width: usize, height: usize) -> Self {
+        if width < 3 || height < 3 {
             panic!("minimum size of a field is 3x3");
         }
-        Self {
-            inner: [[DEAD; WIDTH]; HEIGHT],
+        let mut inner = Vec::with_capacity(height);
+        for _ in 0..height {
+            let mut row = Vec::with_capacity(width);
+            for _ in 0..width {
+                row.push(DEAD);
+            }
+            inner.push(row);
         }
+        Self { inner }
+    }
+
+    pub fn height(&self) -> usize {
+        self.inner.len()
+    }
+
+    pub fn width(&self) -> usize {
+        self.inner[0].len()
     }
 
     pub fn neighbours(&self, (x, y): (usize, usize)) -> Vec<char> {
-        if x >= WIDTH || y >= HEIGHT {
+        if y >= self.height() || x >= self.width() {
             panic!("Out of field bounds: ({}, {})", x, y);
         }
 
@@ -44,8 +58,8 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
         };
 
         let mut result = Vec::with_capacity(8);
-        let x_range = range_from(x, WIDTH);
-        let y_range = range_from(y, HEIGHT);
+        let x_range = range_from(x, self.width());
+        let y_range = range_from(y, self.height());
 
         for column in x_range {
             for row in y_range.clone() {
@@ -66,36 +80,38 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
     }
 }
 
-impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIGHT> {
+impl fmt::Display for Field {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut frame = String::new();
         write!(&mut frame, "[")?;
-        for _ in 0..(WIDTH - 2) {
+        for _ in 0..(self.width() - 2) {
             write!(&mut frame, "-")?;
         }
         write!(&mut frame, "]")?;
         writeln!(f, "{}", frame)?;
-        for row in self.inner {
+        for row in &self.inner {
             writeln!(f, "{}", row.iter().collect::<String>())?;
         }
         write!(f, "{}", frame)
     }
 }
 
-impl<const WIDTH: usize, const HEIGHT: usize> From<[[char; WIDTH]; HEIGHT]>
-    for Field<WIDTH, HEIGHT>
-{
-    fn from(inner: [[char; WIDTH]; HEIGHT]) -> Self {
+impl<const WIDTH: usize, const HEIGHT: usize> From<[[char; WIDTH]; HEIGHT]> for Field {
+    fn from(array: [[char; WIDTH]; HEIGHT]) -> Self {
+        let mut inner = Vec::with_capacity(HEIGHT);
+        for row in array {
+            inner.push(Vec::from(row));
+        }
         Self { inner }
     }
 }
 
-pub struct Strategy<const WIDTH: usize, const HEIGHT: usize> {
-    field: Field<WIDTH, HEIGHT>,
+pub struct Strategy {
+    field: Field,
 }
 
-impl<const WIDTH: usize, const HEIGHT: usize> Strategy<WIDTH, HEIGHT> {
-    pub fn new(field: Field<WIDTH, HEIGHT>) -> Self {
+impl Strategy {
+    pub fn new(field: Field) -> Self {
         Strategy { field }
     }
 
@@ -124,15 +140,15 @@ impl<const WIDTH: usize, const HEIGHT: usize> Strategy<WIDTH, HEIGHT> {
     }
 }
 
-impl<const WIDTH: usize, const HEIGHT: usize> Iterator for Strategy<WIDTH, HEIGHT> {
-    type Item = Field<WIDTH, HEIGHT>;
+impl Iterator for Strategy {
+    type Item = Field;
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut field = self.field.clone();
 
         let mut updated_any = false;
-        for x in 0..WIDTH {
-            for y in 0..HEIGHT {
+        for x in 0..self.field.width() {
+            for y in 0..self.field.height() {
                 if let Some(value) = self.advance_one((x, y)) {
                     *field.value_mut((x, y)) = value;
                     updated_any = true;

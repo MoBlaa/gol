@@ -1,7 +1,7 @@
 use naive::{Field, Strategy, ALIVE, DEAD};
 
 // Tests for a field to oscillate after [steps].
-fn is_oscillating<const W: usize, const H: usize>(root: Field<W, H>, period: usize) {
+fn is_oscillating(root: Field, period: usize) {
     let mut strategy = Strategy::new(root.clone());
 
     for period in 1..period {

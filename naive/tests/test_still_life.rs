@@ -1,6 +1,6 @@
 use naive::{Field, Strategy, ALIVE, DEAD};
 
-fn is_still<const WIDTH: usize, const HEIGHT: usize>(field: Field<WIDTH, HEIGHT>) {
+fn is_still(field: Field) {
     let mut strategy = Strategy::new(field);
 
     let next = strategy.next();

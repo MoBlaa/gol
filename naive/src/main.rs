@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
 use tokio::time::{Duration, Instant};
 
-fn hash<const W: usize, const H: usize>(field: &Field<W, H>) -> u64 {
+fn hash(field: &Field) -> u64 {
     let mut hasher = DefaultHasher::new();
     field.hash(&mut hasher);
     hasher.finish()
@@ -12,7 +12,12 @@ fn hash<const W: usize, const H: usize>(field: &Field<W, H>) -> u64 {
 
 #[tokio::main]
 async fn main() {
-    let field = Field::<100, 10>::random();
+    let mut args = std::env::args();
+    let width: usize = args.next().map(|s| s.parse().unwrap_or(100)).unwrap_or(100);
+
+    let height: usize = args.next().map(|s| s.parse().unwrap_or(100)).unwrap_or(100);
+
+    let field = Field::random(width, height);
     println!("Round 0:\n{}", field);
 
     let mut strategy = Strategy::new(field.clone());
