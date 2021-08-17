@@ -76,18 +76,21 @@ impl Strategy {
             receiver
         };
 
+        let mut updated_field = field.read().await.clone();
         let consumer = tokio::spawn(async move {
             let mut updates_some = false;
             while let Some((cords, char)) = receiver.recv().await {
-                let mut field = field.write().await;
-                *field.value_mut(cords) = char;
+                *updated_field.value_mut(cords) = char;
                 updates_some = true;
             }
-            updates_some
+            (updated_field, updates_some)
         });
 
-        if !consumer.await.unwrap_or(false) {
+        let (new_field, changed) = consumer.await.unwrap();
+        if !changed {
             return None;
+        } else {
+            *field.write().await = new_field;
         }
 
         Some(())
