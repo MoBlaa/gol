@@ -1,4 +1,5 @@
-use gol_naive::{Field, Strategy, ALIVE, DEAD};
+use gol_lib::{Field, ALIVE, DEAD};
+use gol_naive::Strategy;
 
 fn is_still(field: Field) {
     let mut strategy = Strategy::new(field);

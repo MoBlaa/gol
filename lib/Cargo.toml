@@ -1,10 +1,9 @@
 [package]
-name = "gol-naive"
+name = "gol-lib"
 version = "0.1.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gol-lib = { path = "../lib" }
-tokio = { version = "1.10.0", features = ["full"] }
+rand = "0.8.3"

@@ -1,4 +1,5 @@
-use gol_naive::{Field, Strategy};
+use gol_lib::Field;
+use gol_naive::Strategy;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;
 use std::hash::{Hash, Hasher};
