@@ -1,3 +1,4 @@
+use futures::Stream;
 use gol_lib::{Field, ALIVE, DEAD};
 
 pub struct Strategy {
@@ -10,9 +11,9 @@ impl Strategy {
     }
 
     /// Returns the resulting value of one cell if it changes.
-    pub fn advance_one(&self, cords: (usize, usize)) -> Option<char> {
-        let neighbours = self.field.neighbours(cords);
-        let value = self.field.value(cords);
+    pub fn advance_one(cords: (usize, usize), field: &Field) -> Option<char> {
+        let neighbours = field.neighbours(cords);
+        let value = field.value(cords);
 
         let alive = neighbours.iter().filter(|char| char == &&ALIVE).count();
 
@@ -32,30 +33,54 @@ impl Strategy {
             _ => None,
         }
     }
-}
 
-impl Iterator for Strategy {
-    type Item = Field;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let mut field = self.field.clone();
-
-        let mut updated_any = false;
-        for x in 0..self.field.width() {
-            for y in 0..self.field.height() {
-                if let Some(value) = self.advance_one((x, y)) {
-                    *field.value_mut((x, y)) = value;
-                    updated_any = true;
-                }
+    fn advance_row(row: usize, field: Field) -> Vec<((usize, usize), char)> {
+        let mut updates = Vec::new();
+        for x in 0..field.width() {
+            if let Some(value) = Strategy::advance_one((x, row), &field) {
+                updates.push(((x, row), value));
             }
         }
+        updates
+    }
 
-        if !updated_any {
+    async fn advance_field(mut field: Field) -> Option<Field> {
+        let mut updates = Vec::with_capacity(field.width());
+        for y in 0..field.height() {
+            let field = field.clone();
+            updates.push(tokio::spawn(async move { Strategy::advance_row(y, field) }));
+        }
+
+        let updates = futures::future::join_all(updates)
+            .await
+            .into_iter()
+            .flatten()
+            .flat_map(|e| e.into_iter())
+            .collect::<Vec<((usize, usize), char)>>();
+
+        if updates.is_empty() {
             return None;
         }
 
-        self.field = field.clone();
-
+        // Update field
+        for (cords, char) in updates {
+            *field.value_mut(cords) = char;
+        }
         Some(field)
+    }
+
+    pub fn into_stream(self) -> impl Stream<Item = Field> {
+        let mut old_field = self.field;
+        async_stream::stream! {
+            loop {
+                let field = Strategy::advance_field(old_field.clone()).await;
+                if let Some(field) = field {
+                    yield field.clone();
+                    old_field = field;
+                } else {
+                    break;
+                }
+            }
+        }
     }
 }

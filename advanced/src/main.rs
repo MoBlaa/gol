@@ -1,3 +1,4 @@
+use futures::StreamExt;
 use gol_adv::Strategy;
 use gol_lib::Field;
 use std::collections::hash_map::DefaultHasher;
@@ -29,25 +30,27 @@ async fn main() {
         println!("Round 0:\n{}", field);
     }
 
-    let mut strategy = Strategy::new(field.clone());
+    let strategy = Strategy::new(field.clone());
 
-    let mut round = 1usize;
+    let mut round = 1u32;
     let mut visited = HashSet::new();
     visited.insert(hash(&field));
     let mut whole = Duration::new(0, 0);
-    loop {
-        tokio::time::sleep(Duration::from_millis(timeout)).await;
 
+    let field_stream = strategy.into_stream();
+
+    futures::pin_mut!(field_stream);
+
+    loop {
         let now = Instant::now();
-        let field = strategy.next();
+        let field = match field_stream.next().await {
+            None => break,
+            Some(field) => field,
+        };
         let elapsed = now.elapsed();
 
         whole += elapsed;
 
-        if field.is_none() {
-            break;
-        }
-        let field = field.unwrap();
         if !visited.insert(hash(&field)) {
             break;
         }
@@ -57,6 +60,13 @@ async fn main() {
             println!("{}", field);
         }
         round += 1;
+
+        tokio::time::sleep(Duration::from_millis(timeout)).await;
     }
-    println!("Finished after {}rnd and {:?}", round + 1, whole);
+    println!(
+        "Finished after {}rnd and {:?} ({:?})",
+        round + 1,
+        whole,
+        whole / (round + 1)
+    );
 }
