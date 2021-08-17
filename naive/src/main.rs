@@ -37,6 +37,6 @@ async fn main() {
         }
 
         println!("Round {} ({:?}):\n{}", round, elapsed, field);
-        round = round + 1;
+        round += 1;
     }
 }
