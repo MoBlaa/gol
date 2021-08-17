@@ -38,6 +38,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "gol-adv"
+version = "0.1.0"
+dependencies = [
+ "gol-lib",
+ "tokio",
+]
+
+[[package]]
 name = "gol-lib"
 version = "0.1.0"
 dependencies = [
