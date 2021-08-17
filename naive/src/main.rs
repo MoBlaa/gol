@@ -6,6 +6,18 @@ struct Field<const WIDTH: usize, const HEIGHT: usize> {
 }
 
 impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
+    fn random() -> Self {
+        let mut field = Self::new();
+
+        for x in 0..WIDTH {
+            for y in 0..HEIGHT {
+                *field.value_mut((x, y)) = if rand::random::<bool>() { '▣' } else { '▢' }
+            }
+        }
+
+        field
+    }
+
     fn new() -> Self {
         if WIDTH < 3 || HEIGHT < 3 {
             panic!("minimum size of a field is 3x3");
@@ -68,17 +80,21 @@ impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIG
 
 #[tokio::main]
 async fn main() {
-    let mut field = Field::<5, 5>::new();
-    *field.value_mut((1, 1)) = '0';
-    *field.value_mut((2, 1)) = '1';
-    *field.value_mut((3, 1)) = '2';
-    *field.value_mut((1, 2)) = '3';
-    *field.value_mut((2, 2)) = 'x';
-    *field.value_mut((3, 2)) = '4';
-    *field.value_mut((1, 3)) = '5';
-    *field.value_mut((2, 3)) = '6';
-    *field.value_mut((3, 3)) = '7';
+    let field = Field::<20, 10>::random();
     println!("Hello, Field:\n{}", field);
-    let neighbours = field.neighbours((2, 2));
-    println!("Neighbours of (x=2, y=2) are: {:?}", neighbours);
+
+    let print_neighbours = |cords: (usize, usize)| {
+        let neighbours = field.neighbours(cords);
+        println!(
+            "Neighbours of '{}' {:?} are: {:?}",
+            field.value(cords),
+            cords,
+            neighbours
+        );
+    };
+
+    print_neighbours((0, 0));
+    print_neighbours((19, 0));
+    print_neighbours((0, 9));
+    print_neighbours((19, 9));
 }
