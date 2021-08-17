@@ -1,8 +1,8 @@
-use std::fmt::Write;
 use std::fmt;
+use std::fmt::Write;
 
 struct Field<const WIDTH: usize, const HEIGHT: usize> {
-    inner: [[char; WIDTH]; HEIGHT]
+    inner: [[char; WIDTH]; HEIGHT],
 }
 
 impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
@@ -10,7 +10,9 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
         if WIDTH < 3 || HEIGHT < 3 {
             panic!("minimum size of a field is 3x3");
         }
-        Self { inner: [[' '; WIDTH]; HEIGHT] }
+        Self {
+            inner: [[' '; WIDTH]; HEIGHT],
+        }
     }
 
     fn neighbours(&self, (x, y): (usize, usize)) -> Vec<char> {
@@ -19,10 +21,10 @@ impl<const WIDTH: usize, const HEIGHT: usize> Field<WIDTH, HEIGHT> {
         }
 
         let range_from = |x: usize, max: usize| match (x > 0, x < max - 1) {
-            (true, true) => (x-1)..(x+2),
-            (false, true) => x..(x+2),
-            (true, false) => (x-1)..(x+1),
-            (false, false) => x..(x+1),
+            (true, true) => (x - 1)..(x + 2),
+            (false, true) => x..(x + 2),
+            (true, false) => (x - 1)..(x + 1),
+            (false, false) => x..(x + 1),
         };
 
         let mut result = Vec::with_capacity(8);
@@ -52,7 +54,7 @@ impl<const WIDTH: usize, const HEIGHT: usize> fmt::Display for Field<WIDTH, HEIG
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut frame = String::new();
         write!(&mut frame, "[")?;
-        for _ in 0..(WIDTH-2) {
+        for _ in 0..(WIDTH - 2) {
             write!(&mut frame, "-")?;
         }
         write!(&mut frame, "]")?;
@@ -80,4 +82,3 @@ async fn main() {
     let neighbours = field.neighbours((2, 2));
     println!("Neighbours of (x=2, y=2) are: {:?}", neighbours);
 }
-
