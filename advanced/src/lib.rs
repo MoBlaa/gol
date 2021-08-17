@@ -58,7 +58,7 @@ impl Strategy {
         let height = field.read().await.height();
         let mut receiver = {
             let (sender, receiver) = tokio::sync::mpsc::channel(1000);
-            for chunk in &(0..height).chunks(2 * height / num_cpus::get()) {
+            for chunk in &(0..height).chunks(height / num_cpus::get()) {
                 let field = Arc::clone(&field);
                 let chunk = chunk.collect::<Vec<_>>();
                 let sender = sender.clone();
