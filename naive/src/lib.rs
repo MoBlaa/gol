@@ -113,11 +113,12 @@ impl<const WIDTH: usize, const HEIGHT: usize> Strategy<WIDTH, HEIGHT> {
         3. Any live cell with more than three live neighbours dies, as if by overpopulation.
         4.Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
          */
-        match (value, alive == 2, alive == 3) {
-            (&ALIVE, true, _) => None,
-            (&ALIVE, _, true) => None,
-            (&DEAD, _, true) => Some(ALIVE),
-            (&ALIVE, _, _) => Some(DEAD),
+        match (value, alive < 2, alive == 2, alive == 3, alive > 3) {
+            (&ALIVE, true, _, _, _) => Some(DEAD), // underpopulation
+            (&ALIVE, _, true, _, _) => None,       // next generation
+            (&ALIVE, _, _, true, _) => None,       // next generation
+            (&ALIVE, _, _, _, true) => Some(DEAD), // overpopulation
+            (&DEAD, _, _, true, _) => Some(ALIVE), // reproduction
             _ => None,
         }
     }
@@ -127,7 +128,7 @@ impl<const WIDTH: usize, const HEIGHT: usize> Iterator for Strategy<WIDTH, HEIGH
     type Item = Field<WIDTH, HEIGHT>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let mut field = Field::dead();
+        let mut field = self.field.clone();
 
         let mut updated_any = false;
         for x in 0..WIDTH {

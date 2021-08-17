@@ -4,9 +4,10 @@ use naive::{Field, Strategy, ALIVE, DEAD};
 fn is_oscillating<const W: usize, const H: usize>(root: Field<W, H>, period: usize) {
     let mut strategy = Strategy::new(root.clone());
 
-    for _ in 1..period {
+    for period in 1..period {
         let next = strategy.next();
         assert!(next.is_some(), "Not advanced on oscillator",);
+        println!("Period {}:\n{}", period, next.unwrap());
     }
 
     let repetition = strategy.next();
