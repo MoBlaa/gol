@@ -1,10 +1,10 @@
 use std::fmt;
 use std::fmt::Write;
 
-pub const ALIVE: char = '▣';
-pub const DEAD: char = '▢';
+pub const ALIVE: char = '\u{25AE}';
+pub const DEAD: char = '\u{25AF}';
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct Field<const WIDTH: usize, const HEIGHT: usize> {
     inner: [[char; WIDTH]; HEIGHT],
 }
