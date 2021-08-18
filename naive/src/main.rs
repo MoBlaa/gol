@@ -12,7 +12,7 @@ fn hash(field: &Field) -> u64 {
     hasher.finish()
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     let mut args = std::env::args();
     args.next();
