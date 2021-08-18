@@ -1,5 +1,5 @@
 [package]
-name = "gol-naive"
+name = "gol-conc"
 version = "0.1.0"
 edition = "2018"
 

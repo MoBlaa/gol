@@ -1,11 +1,11 @@
 use gol_lib::Field;
-use gol_naive::Strategy;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;
 use std::convert::TryFrom;
 use std::hash::{Hash, Hasher};
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use gol_conc::Strategy;
 
 fn hash(field: &Field) -> u64 {
     let mut hasher = DefaultHasher::new();
@@ -40,9 +40,7 @@ fn main() {
     visited.insert(hash(&field));
     let mut whole = Duration::new(0, 0);
     loop {
-        if timeout != 0 {
-            sleep(Duration::from_millis(timeout));
-        }
+        sleep(Duration::from_millis(timeout));
 
         let now = Instant::now();
         let field = strategy.next();

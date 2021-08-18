@@ -171,6 +171,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "gol-conc"
+version = "0.1.0"
+dependencies = [
+ "gol-lib",
+]
+
+[[package]]
 name = "gol-lib"
 version = "0.1.0"
 dependencies = [
@@ -182,7 +189,6 @@ name = "gol-naive"
 version = "0.1.0"
 dependencies = [
  "gol-lib",
- "tokio",
 ]
 
 [[package]]

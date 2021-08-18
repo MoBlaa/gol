@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/lib/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/async/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/async/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/conc/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
