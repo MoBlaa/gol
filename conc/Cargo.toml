@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 gol-lib = { path = "../lib" }
+spmc = "0.3.0"
