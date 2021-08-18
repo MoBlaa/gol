@@ -1,5 +1,5 @@
 use futures::StreamExt;
-use gol_adv::Strategy;
+use gol_async::Strategy;
 use gol_lib::Field;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;

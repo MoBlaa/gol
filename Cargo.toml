@@ -2,5 +2,5 @@
 members = [
     "naive",
     "lib",
-    "advanced",
+    "async",
 ]

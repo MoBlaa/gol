@@ -1,5 +1,5 @@
 use futures::StreamExt;
-use gol_adv::Strategy;
+use gol_async::Strategy;
 use gol_lib::{Field, ALIVE, DEAD};
 
 async fn is_still(field: Field) {
