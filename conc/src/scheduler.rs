@@ -86,7 +86,11 @@ impl Scheduler {
         field: Arc<RwLock<Field>>,
         sender: mpsc::SyncSender<Vec<Update>>,
     ) -> Self {
-        let num_cpus = if cfg!(test) { num_cpus::get() } else { 1 };
+        let mut num_cpus = if cfg!(test) { 1 } else { num_cpus::get() };
+
+        if num_cpus > 1 {
+            num_cpus -= 1;
+        }
 
         Self::workers(injector, field, sender, num_cpus)
     }
