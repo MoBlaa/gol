@@ -9,20 +9,20 @@ fn criterion_benchmark(c: &mut Criterion) {
         let mut strategy = Strategy::new(field);
         b.iter(|| strategy.next());
     });
-    c.bench_function("gol-naive 100 100", |b| {
-        let field = Field::random(100, 100);
+    c.bench_function("gol-naive 500 500", |b| {
+        let field = Field::random(500, 500);
 
         let mut strategy = Strategy::new(field);
         b.iter(|| strategy.next());
     });
-    c.bench_function("gol-naive 1000 100", |b| {
-        let field = Field::random(1000, 100);
+    c.bench_function("gol-naive 1000 500", |b| {
+        let field = Field::random(1000, 500);
 
         let mut strategy = Strategy::new(field);
         b.iter(|| strategy.next());
     });
-    c.bench_function("gol-naive 100 1000", |b| {
-        let field = Field::random(100, 1000);
+    c.bench_function("gol-naive 500 1000", |b| {
+        let field = Field::random(500, 1000);
 
         let mut strategy = Strategy::new(field);
         b.iter(|| strategy.next());
