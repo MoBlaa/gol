@@ -1,5 +1,13 @@
 use gol_lib::{Field, ALIVE, DEAD};
 
+pub struct Update((usize, usize), char);
+
+impl Update {
+    pub fn into_inner(self) -> ((usize, usize), char) {
+        (self.0, self.1)
+    }
+}
+
 pub struct Strategy {
     field: Field,
 }
@@ -10,9 +18,9 @@ impl Strategy {
     }
 
     /// Returns the resulting value of one cell if it changes.
-    pub fn advance_one(&self, cords: (usize, usize)) -> Option<char> {
-        let neighbours = self.field.neighbours(cords);
-        let value = self.field.value(cords);
+    pub fn advance_one(cords: (usize, usize), field: &Field) -> Option<char> {
+        let neighbours = field.neighbours(cords);
+        let value = field.value(cords);
 
         let alive = neighbours.iter().filter(|char| char == &&ALIVE).count();
 
@@ -32,6 +40,16 @@ impl Strategy {
             _ => None,
         }
     }
+
+    pub fn advance_row(row: usize, field: &Field) -> Vec<Update> {
+        let mut updates = Vec::new();
+        for column in 0..field.width() {
+            if let Some(update) = Strategy::advance_one((column, row), field) {
+                updates.push(Update((column, row), update));
+            }
+        }
+        updates
+    }
 }
 
 impl Iterator for Strategy {
@@ -41,12 +59,11 @@ impl Iterator for Strategy {
         let mut field = self.field.clone();
 
         let mut updated_any = false;
-        for x in 0..self.field.width() {
-            for y in 0..self.field.height() {
-                if let Some(value) = self.advance_one((x, y)) {
-                    *field.value_mut((x, y)) = value;
-                    updated_any = true;
-                }
+        for row in 0..self.field.height() {
+            let updates = Strategy::advance_row(row, &self.field);
+            for Update(cords, value) in updates {
+                *field.value_mut(cords) = value;
+                updated_any = true;
             }
         }
 
