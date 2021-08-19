@@ -5,9 +5,9 @@ use std::collections::HashSet;
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("gol 1000 1000 1000", |b| {
-        let field = Field::random(width, height);
+        let field = Field::random(1000, 1000);
 
-        let mut strategy = Strategy::new(field.clone());
+        let mut strategy = Strategy::new(field);
         b.iter(|| strategy.next());
     });
 }
