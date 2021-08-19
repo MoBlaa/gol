@@ -1,3 +1,4 @@
+use gol_conc::Strategy;
 use gol_lib::Field;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashSet;
@@ -5,7 +6,6 @@ use std::convert::TryFrom;
 use std::hash::{Hash, Hasher};
 use std::thread::sleep;
 use std::time::{Duration, Instant};
-use gol_conc::Strategy;
 
 fn hash(field: &Field) -> u64 {
     let mut hasher = DefaultHasher::new();
