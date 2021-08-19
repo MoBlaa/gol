@@ -74,6 +74,40 @@ impl Field {
     pub fn value_mut(&mut self, (x, y): (usize, usize)) -> &mut char {
         &mut self.inner[y][x]
     }
+
+    /// Returns the resulting value of one cell if it changes.
+    pub fn advance_one(&self, cords: (usize, usize)) -> Option<char> {
+        let neighbours = self.neighbours(cords);
+        let value = self.value(cords);
+
+        let alive = neighbours.iter().filter(|char| char == &&ALIVE).count();
+
+        // Breakdown of the rules
+        /*
+        1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+        2. Any live cell with two or three live neighbours lives on to the next generation.
+        3. Any live cell with more than three live neighbours dies, as if by overpopulation.
+        4.Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+         */
+        match (value, alive < 2, alive == 2, alive == 3, alive > 3) {
+            (&ALIVE, true, _, _, _) => Some(DEAD), // underpopulation
+            (&ALIVE, _, true, _, _) => None,       // next generation
+            (&ALIVE, _, _, true, _) => None,       // next generation
+            (&ALIVE, _, _, _, true) => Some(DEAD), // overpopulation
+            (&DEAD, _, _, true, _) => Some(ALIVE), // reproduction
+            _ => None,
+        }
+    }
+
+    pub fn advance_row(&self, row: usize) -> Vec<((usize, usize), char)> {
+        let mut updates = Vec::new();
+        for column in 0..self.width() {
+            if let Some(update) = self.advance_one((column, row)) {
+                updates.push(((column, row), update));
+            }
+        }
+        updates
+    }
 }
 
 impl fmt::Display for Field {

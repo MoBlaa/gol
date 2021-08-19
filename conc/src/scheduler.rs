@@ -1,4 +1,4 @@
-use crate::{Strategy, Task, Update};
+use crate::{Task, Update};
 use crossbeam_deque::Injector;
 use gol_lib::Field;
 use std::sync::{mpsc, Arc, RwLock};
@@ -49,7 +49,7 @@ impl Worker {
                         }
                         Ok(lock) => lock,
                     };
-                    let updates = Strategy::advance_row(index, &field);
+                    let updates = field.advance_row(index);
                     if let Err(why) = self.output.send(updates) {
                         eprintln!("Worker #{} failed to send updates: {:?}", self.id, why);
                         break;
