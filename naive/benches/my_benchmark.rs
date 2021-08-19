@@ -1,7 +1,6 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 use gol_lib::Field;
 use gol_naive::Strategy;
-use std::collections::HashSet;
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("gol 1000 1000 1000", |b| {
