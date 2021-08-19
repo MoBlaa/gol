@@ -9,3 +9,10 @@ edition = "2018"
 crossbeam-deque = "0.8.1"
 gol-lib = { path = "../lib" }
 num_cpus = "1.13.0"
+
+[dev-dependencies]
+criterion = "0.3.5"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
