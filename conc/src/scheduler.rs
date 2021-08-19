@@ -1,14 +1,13 @@
 use crate::{Strategy, Task, Update};
-use crossbeam_deque::{Injector, Stealer};
+use crossbeam_deque::Injector;
 use gol_lib::Field;
 use std::sync::{mpsc, Arc, RwLock};
-use std::thread::JoinHandle;
+use std::thread::{sleep, JoinHandle};
+use std::time::Duration;
 
 pub struct Worker {
     id: usize,
     global_queue: Arc<Injector<Task>>,
-    worker: crossbeam_deque::Worker<Task>,
-    stealers: Vec<Stealer<Task>>,
     field: Arc<RwLock<Field>>,
     output: mpsc::SyncSender<Vec<Update>>,
 }
@@ -17,36 +16,23 @@ impl Worker {
     pub fn new(
         id: usize,
         injector: Arc<Injector<Task>>,
-        stealers: Vec<Stealer<Task>>,
         field: Arc<RwLock<Field>>,
         output: mpsc::SyncSender<Vec<Update>>,
     ) -> Self {
         Worker {
             id,
             global_queue: injector,
-            worker: crossbeam_deque::Worker::new_fifo(),
-            stealers,
             field,
             output,
         }
     }
 
     fn find_task(&self) -> Option<Task> {
-        // Pop a task from the local queue, if not empty.
-        self.worker.pop().or_else(|| {
-            // Otherwise, we need to look for a task elsewhere.
-            std::iter::repeat_with(|| {
-                // Try stealing a batch of tasks from the global queue.
-                self.global_queue
-                    .steal_batch_and_pop(&self.worker)
-                    // Or try stealing a task from one of the other threads.
-                    .or_else(|| self.stealers.iter().map(|s| s.steal()).collect())
-            })
+        std::iter::repeat_with(|| self.global_queue.steal())
             // Loop while no task was stolen and any steal operation needs to be retried.
             .find(|s| !s.is_retry())
             // Extract the stolen task, if there is one.
             .and_then(|s| s.success())
-        })
     }
 
     pub fn start(&self) {
@@ -70,7 +56,7 @@ impl Worker {
                     }
                 }
                 Some(Task::Stop) => break,
-                None => (),
+                None => sleep(Duration::from_millis(10)),
             }
         }
     }
@@ -86,7 +72,7 @@ impl Scheduler {
         field: Arc<RwLock<Field>>,
         sender: mpsc::SyncSender<Vec<Update>>,
     ) -> Self {
-        let mut num_cpus = if cfg!(test) { 1 } else { num_cpus::get() };
+        let mut num_cpus = num_cpus::get();
 
         if num_cpus > 1 {
             num_cpus -= 1;
@@ -118,7 +104,6 @@ impl Scheduler {
             workers.push(Worker::new(
                 id,
                 Arc::clone(&injector),
-                stealers,
                 Arc::clone(&field),
                 sender.clone(),
             ));
